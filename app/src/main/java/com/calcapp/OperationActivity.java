@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Button;
+import android.widget.Toast;
+
 
 import javax.microedition.khronos.egl.EGLDisplay;
 
@@ -23,6 +25,7 @@ public class OperationActivity extends AppCompatActivity {
     private Button btnOperar;
     private boolean validado;
     private int valValidado;
+    private Toast toast;
 
     private Thread fila = new Thread(){
         public void run(){
@@ -47,6 +50,7 @@ public class OperationActivity extends AppCompatActivity {
                             result1 = num * i;
                             break;
                         case "/":
+                            result1 = num / i;
                     }
                     textBase+=num + operador + i + " = ? "+ '\n';
                     txtTablaR.setText(textBase);
@@ -59,12 +63,18 @@ public class OperationActivity extends AppCompatActivity {
                             tiempo=15000;
                         }
                     }
+
                     if(valValidado == result1){
                         result2 += num + operador + i + " = " + result1 +" (√) "+ '\n';
+                        toast.setText("Correcto (√)");
+                        toast.show();
                     }
                     else{
                         result2 += num + operador + i + " = " + valValidado +" (X) "+ '\n';
+                        toast.setText("Incorrecto (X)");
+                        toast.show();
                     }
+
                     validado = false;
                     editTextR.setText("");
                 }
@@ -73,13 +83,16 @@ public class OperationActivity extends AppCompatActivity {
                 editTextR.setEnabled(false);
                 btnOperarR.setEnabled(false);
 
-                //editTextR.setVisibility(View.INVISIBLE);
-                //btnOperarR.setVisibility(View.INVISIBLE);
+                editTextR.setVisibility(View.INVISIBLE);
+                btnOperarR.setVisibility(View.INVISIBLE);
+
             }
             catch(Exception e){
                 e.printStackTrace();
             }finally{
-                //finish();
+                /*editTextR.setVisibility(View.INVISIBLE);
+                btnOperarR.setVisibility(View.INVISIBLE);
+                finish();*/
             }
         }
     };
@@ -95,6 +108,8 @@ public class OperationActivity extends AppCompatActivity {
         btnOperar = (Button) findViewById(R.id.button6);
         validado = false;
         valValidado = 0;
+        toast=Toast.makeText(getApplicationContext(),"",Toast.LENGTH_SHORT);
+        toast.setGravity(20|20, 0, 0);
 
         operador = getIntent().getStringExtra("operador");
         switch(operador) {
@@ -140,6 +155,7 @@ public class OperationActivity extends AppCompatActivity {
             valValidado = Integer.parseInt(str);
         }
         validado = true;
+
     }
 
     public void goMain(View view){

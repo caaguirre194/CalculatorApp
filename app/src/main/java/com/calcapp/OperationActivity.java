@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Button;
 
+import javax.microedition.khronos.egl.EGLDisplay;
+
 
 public class OperationActivity extends AppCompatActivity {
 
@@ -21,6 +23,68 @@ public class OperationActivity extends AppCompatActivity {
     private Button btnOperar;
     private boolean validado;
     private int valValidado;
+
+    private Thread fila = new Thread(){
+        public void run(){
+            try{
+                String str = numOper.getText().toString();
+                int num = 0;
+                if(str != null && !str.isEmpty()){
+                    num = Integer.parseInt(str);
+                }
+                String result2 = "";
+                String textBase = "";
+                for(int i=1;i<=10;i++){
+                    int result1 = 0;
+                    switch(operador) {
+                        case "+":
+                            result1 = num + i;
+                            break;
+                        case "-":
+                            result1 = num - i;
+                            break;
+                        case "x":
+                            result1 = num * i;
+                            break;
+                        case "/":
+                    }
+                    textBase+=num + operador + i + " = ? "+ '\n';
+                    txtTablaR.setText(textBase);
+
+                    int tiempo=0;
+                    while(tiempo<15000){
+                        sleep(100);
+                        tiempo=tiempo+100;
+                        if(validado){
+                            tiempo=15000;
+                        }
+                    }
+                    if(valValidado == result1){
+                        result2 += num + operador + i + " = " + result1 +" (√) "+ '\n';
+                    }
+                    else{
+                        result2 += num + operador + i + " = " + valValidado +" (X) "+ '\n';
+                    }
+                    validado = false;
+                    editTextR.setText("");
+                }
+                txtTablaR.setText(result2);
+
+                editTextR.setEnabled(false);
+                btnOperarR.setEnabled(false);
+
+                //editTextR.setVisibility(View.INVISIBLE);
+                //btnOperarR.setVisibility(View.INVISIBLE);
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }finally{
+                //finish();
+            }
+        }
+    };
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +117,7 @@ public class OperationActivity extends AppCompatActivity {
     public void operar(View view){
         btnOperar.setEnabled(false);
         numOper.setEnabled(false);
-        String str = numOper.getText().toString();
-        int num = 0;
-        if(str != null && !str.isEmpty()){
-            num = Integer.parseInt(str);
-        }
+
         btnOperar.setVisibility(View.INVISIBLE);
         txtTablaR = (TextView) findViewById(R.id.textViewR1);
         txtTablaR.setVisibility(View.VISIBLE);
@@ -68,45 +128,14 @@ public class OperationActivity extends AppCompatActivity {
         btnOperarR = (Button) findViewById(R.id.buttonR1);
         btnOperarR.setVisibility(View.VISIBLE);
 
-
-        String result2 = "";
-        for(int i=1;i<=10;i++){
-            int result1 = 0;
-            switch(operador) {
-                case "+":
-                    result1 = num + i;
-                    break;
-                case "-":
-                     result1 = num - i;
-                    break;
-                case "x":
-                     result1 = num * i;
-                    break;
-                case "/":
-                    result1 = num / i;
-                    break;
-            }
-            txtTablaR.setText(num + operador + i + " = ? ");
-
-            if(valValidado == result1){
-                result2 += num + operador + i + " = " + result1 +" (√) "+ '\n';
-            }
-            else{
-                result2 += num + operador + i + " = " + result1 +" (X) "+ '\n';
-            }
-            validado = false;
-        }
-        //txtTablaR.setText(result2);
-    }
-
-    public void preguntar(){
+        fila.start();
 
     }
 
     public void validar(View view){
 
         String str = editTextR.getText().toString();
-        int valValidado = 0;
+        valValidado = 0;
         if(str != null && !str.isEmpty()){
             valValidado = Integer.parseInt(str);
         }

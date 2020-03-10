@@ -1,5 +1,5 @@
 # CalculatorApp
-Este proyecto es una Alicación Android nativa desarrollada netamente con Java en Android Studio.
+Este proyecto es una Aplicación Android nativa de una calculadora desarrollada netamente con Java en Android Studio.
 
 ## GO-ANGULAR:
  ![GitHub](/img/android.png)
